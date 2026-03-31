@@ -49,13 +49,39 @@ def replace_in_file(file_path, pattern, replacement):
             f.write(new_content)
         print(f"ファイル更新: {file_path}")
 
+def get_project_and_device():
+    project_name = "unknown_project"
+    device = "STM32F405RG"
+    
+    # 1. CMakeLists.txt から project_name を取得
+    if os.path.exists("CMakeLists.txt"):
+        with open("CMakeLists.txt", "r", encoding="utf-8") as f:
+            match = re.search(r'set\(\s*CMAKE_PROJECT_NAME\s+([^\s\)]+)\s*\)', f.read(), re.IGNORECASE)
+            if match:
+                project_name = match.group(1)
+                
+    # 2. .ioc ファイルから device を取得
+    ioc_files = [f for f in os.listdir(".") if f.endswith(".ioc")]
+    if ioc_files:
+        with open(ioc_files[0], "r", encoding="utf-8") as f:
+            match = re.search(r'Mcu\.UserName=(STM32[^\s]+)', f.read())
+            if match:
+                mcu_name = match.group(1)
+                # J-Link用のDevice名（パッケージ文字などを除いた先頭11文字）
+                # 例: STM32F405RGTx -> STM32F405RG
+                # 例: STM32G431KBUx -> STM32G431KB
+                device = mcu_name[:11]
+                
+    return project_name, device
+
 # ==========================================
 # メイン処理
 # ==========================================
 def main():
     config = load_config()
-    project_name = config["project_name"]
-    device = config["mcu"]["device"]
+    
+    # プロジェクト名とデバイス名を自動取得
+    project_name, device = get_project_and_device()
     
     # 設定値を取得
     c_standard = config["language"]["c_standard"]

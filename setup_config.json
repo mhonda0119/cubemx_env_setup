@@ -1,16 +1,9 @@
 {
-  "project_name": "<project_name>",
-  "mcu": {
-    "device": "<device>",
-    "define": "<define>",
-    "startup_file": "<startup_file>",
-    "linker_script": "<linker_script>"
-  },
   "toolchain": {
     "ninja_path": "<ninja_path>",
     "gcc_path": "<gcc_path>",
-    "jlink_exe": "<jlink_exe>",
-    "jlink_gdb_server": "<jlink_gdb_server>"
+    "jlink_exe": "<jlink_exe_path>",
+    "jlink_gdb_server": "<jlink_gdb_server_path>"
   },
   "language": {
     "c_standard": 11,
